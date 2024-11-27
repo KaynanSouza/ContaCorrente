@@ -2,146 +2,128 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-
 public class Main {
     public static void main(String[] args) {
 
         Scanner scanner = new Scanner(System.in);
         List<ContaCorrente> contas = new ArrayList<>();
-
         int opcao, numeroDeConta = 1;
 
         do {
-            System.out.println("""
-                    +---------------------+
-                    | Escolha uma opção:  |
-                    | 1 - Criar conta     |
-                    | 2 - Sacar valor     |
-                    | 3 - Depositar valor |
-                    | 4 - Transferir valor|
-                    | 5 - Ver saldo       |
-                    | 6 - Exibir extrato  |
-                    | 7 - Exibir contas   |
-                    | 8 - Sair            |
-                    +---------------------+
-                    """);
+            // Exibição do menu com design aprimorado
+            System.out.println("\n===============================");
+            System.out.println("       MENU - Conta Corrente   ");
+            System.out.println("===============================");
+            System.out.println("1. Criar conta");
+            System.out.println("2. Sacar valor");
+            System.out.println("3. Depositar valor");
+            System.out.println("4. Transferir valor");
+            System.out.println("5. Ver saldo");
+            System.out.println("6. Exibir extrato");
+            System.out.println("7. Exibir todas as contas");
+            System.out.println("8. Sair");
+            System.out.println("===============================");
+            System.out.print("Escolha uma opção: ");
 
-            opcao = scanner.nextByte();
+            opcao = scanner.nextInt();
 
             switch (opcao) {
-                case 1:
-                    {
-                        int numeroAgentia = (int) (Math.random() * 100);
+                case 1 -> {
+                    int numeroAgencia = (int) (Math.random() * 100);
+                    System.out.println("\n=== Criando nova conta ===");
+                    System.out.print("Digite o nome do cliente: ");
+                    String nome = scanner.next();
 
-                        System.out.println("Digite o nome do cliente");
-                        String mome = scanner.next();
+                    System.out.print("Digite a data de nascimento (dd/MM/yyyy): ");
+                    String dataNascimento = scanner.next();
 
-                        System.out.println("Digite a data de nascimento do cliente");
-                        String dataNascimento = scanner.next();
+                    ContaCorrente conta = new ContaCorrente(numeroDeConta, numeroAgencia, nome, dataNascimento);
+                    contas.add(conta);
+                    numeroDeConta++;
 
-                        ContaCorrente conta = new ContaCorrente(numeroDeConta, numeroAgentia, mome, dataNascimento);
-                        contas.add(conta);
-                        numeroDeConta++;
-                        System.out.println("Criar conta Com sucesso");
+                    System.out.println("\nConta criada com sucesso!");
+                    System.out.println("Número da conta: " + conta.getNumeroConta());
+                    System.out.println("Agência: " + conta.getNumeroAgencia());
+                }
+                case 2 -> {
+                    System.out.println("\n=== Sacar valor ===");
+                    System.out.print("Digite o número da conta: ");
+                    int numeroContaSacar = scanner.nextInt();
+
+                    System.out.print("Digite o valor a ser sacado: R$ ");
+                    float valorSacar = scanner.nextFloat();
+
+                    System.out.print("Digite a data da transação (dd/MM/yyyy): ");
+                    String dataTransacao = scanner.next();
+
+                    if (contas.get(numeroContaSacar - 1).sacarValor(dataTransacao, valorSacar, "Saque")) {
+                        System.out.println("Saque realizado com sucesso!");
                     }
-                    break;
-                case 2:
-                    {
-                        System.out.println("Digite o número da conta");
-                        int numeroContaSacar = scanner.nextInt();
+                }
+                case 3 -> {
+                    System.out.println("\n=== Depositar valor ===");
+                    System.out.print("Digite o número da conta: ");
+                    int numeroContaDepositar = scanner.nextInt();
 
-                        System.out.println("Digite o valor a ser sacado");
-                        float valorSacar = scanner.nextFloat();
+                    System.out.print("Digite o valor a ser depositado: R$ ");
+                    float valorDepositar = scanner.nextFloat();
 
-                        System.out.println("Digite a data da transação");
-                        String dataTransacao = scanner.next();
+                    System.out.print("Digite a data da transação (dd/MM/yyyy): ");
+                    String dataTransacaoDepositar = scanner.next();
 
-                        contas.get(numeroContaSacar - 1).sacarValor(dataTransacao, valorSacar, "Saque");
+                    contas.get(numeroContaDepositar - 1).depositarValor(dataTransacaoDepositar, valorDepositar, "Depósito");
+                }
+                case 4 -> {
+                    System.out.println("\n=== Transferir valor ===");
+                    System.out.print("Digite o número da conta remetente: ");
+                    int numeroContaRemetente = scanner.nextInt();
 
-                        System.out.println("Saque feito com sucesso!");
+                    System.out.print("Digite o número da conta destinatária: ");
+                    int numeroContaDestinatario = scanner.nextInt();
+
+                    System.out.print("Digite o valor a ser transferido: R$ ");
+                    float valorTransferido = scanner.nextFloat();
+
+                    System.out.print("Digite a data da transação (dd/MM/yyyy): ");
+                    String dataTransacao = scanner.next();
+
+                    contas.get(numeroContaRemetente - 1).transferir(contas.get(numeroContaDestinatario - 1), valorTransferido, dataTransacao, "Transferência");
+                }
+                case 5 -> {
+                    System.out.println("\n=== Consultar saldo ===");
+                    System.out.print("Digite o número da conta: ");
+                    int numeroContaSaldo = scanner.nextInt();
+
+                    System.out.println("Saldo disponível: R$ " + contas.get(numeroContaSaldo - 1).consultarSaldo());
+                }
+                case 6 -> {
+                    System.out.println("\n=== Exibir extrato ===");
+                    System.out.print("Digite o número da conta: ");
+                    int numeroContaExtrato = scanner.nextInt();
+
+                    System.out.print("Digite a data de início (dd/MM/yyyy): ");
+                    String dataInicio = scanner.next();
+
+                    System.out.print("Digite a data de fim (dd/MM/yyyy): ");
+                    String dataFim = scanner.next();
+
+                    contas.get(numeroContaExtrato - 1).exibirExtrato(dataInicio, dataFim);
+                }
+                case 7 -> {
+                    System.out.println("\n=== Exibir todas as contas ===");
+                    for (ContaCorrente conta : contas) {
+                        System.out.println("----------------------------");
+                        System.out.println("Número da conta: " + conta.getNumeroConta());
+                        System.out.println("Nome do cliente: " + conta.getNomeCliente());
+                        System.out.println("Agência: " + conta.getNumeroAgencia());
+                        System.out.println("----------------------------");
                     }
-                    break;
-                case 3:
-                    {
-                        System.out.println("Digite o número da conta");
-                        int numeroContaDepositar = scanner.nextInt();
-
-                        System.out.println("Digite o valor a ser depositado");
-                        float valorDepositar = scanner.nextFloat();
-
-                        System.out.println("Digite a data da transação");
-                        String dataTransacaoDepositar = scanner.next();
-
-                        contas.get(numeroContaDepositar - 1).depositarValor(dataTransacaoDepositar, valorDepositar, "Deposito");
-
-                        System.out.println("Deposito feito com sucesso!");
-                    }
-                    break;
-                case 4:
-                    {
-                        System.out.println("Digite o número da conta");
-                        int numeroContaTranferencia = scanner.nextInt();
-
-                        System.out.println("Digite o número do destinatario");
-                        int numeroContaDestinatario = scanner.nextInt();
-
-                        System.out.println("Digite o valor a ser tranferido");
-                        float valorTransferido = scanner.nextFloat();
-
-                        System.out.println("Digite a data da transação");
-                        String dataTransacao = scanner.next();
-
-                        contas.get(numeroContaTranferencia - 1).transferir(contas.get(numeroContaDestinatario - 1), valorTransferido, dataTransacao, "Transação");
-
-                        System.out.println("Transferir valor");
-                    }
-                    break;
-                case 5:
-                    {
-                        System.out.println("Digite o numero da conta: ");
-                        int numeroContaSaldo = scanner.nextInt();
-
-                        System.out.println("Saldo: " + contas.get(numeroContaSaldo - 1).consultarSaldo());
-                    }
-                    break;
-                case 6:
-                    {
-                        System.out.println("Digite o número da conta");
-                        int numeroContaExtrato = scanner.nextInt();
-
-                        System.out.println("Digite a data de inicio");
-                        String dataInicio = scanner.next();
-
-                        System.out.println("Digite a data de fim");
-                        String dataFim = scanner.next();
-
-                        contas.get(numeroContaExtrato - 1).exibirExtrato(dataInicio, dataFim);
-                    }
-                    System.out.println("Exibir extrato");
-                    break;
-                case 7:
-                    {
-                        for (ContaCorrente conta : contas) {
-                            System.out.println("Número da conta: " + conta.getNumeroConta());
-                            System.out.println("Nome do cliente: " + conta.getNomeCliente());
-                        }
-                    }
-                    System.out.println("Exibir todas as contas");
-                    break;
-                case 8:
-                    System.out.println("Sair");
-                    break;
-                default:
-                    System.out.println("Opção inválida");
-                    break;
+                }
+                case 8 -> System.out.println("\nSaindo do sistema... Até logo!");
+                default -> System.out.println("\nOpção inválida. Tente novamente.");
             }
         } while (opcao != 8);
 
-
-        // Criar uma conta
-        // ContaCorrente conta = new ContaCorrente(1234, "Fulano", "01/01/2000");
-        // contas.add(conta);
-
-
+        scanner.close();
     }
 }
